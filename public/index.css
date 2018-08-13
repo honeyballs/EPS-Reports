@@ -1,0 +1,23 @@
+body {
+    text-align: center;
+    width: 100%;
+    margin: 0;
+    overflow-x: hidden;
+    font-family: 'Rasa', sans-serif;
+    padding: 20px;
+    -moz-box-sizing: border-box;
+    -webkit-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+h1 {
+    margin-bottom: 50px;
+}
+
+#diagrams {
+    width: 100%;
+}
+
+canvas {
+    margin: 0 0 75px;
+}

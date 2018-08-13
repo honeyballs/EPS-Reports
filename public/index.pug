@@ -2,6 +2,8 @@ html
       head
             script(src = 'https://code.jquery.com/jquery-3.3.1.min.js' integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=' crossorigin='anonymous')
             script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js')
+            link(rel='stylesheet', href='/index.css')
+            link(href="https://fonts.googleapis.com/css?family=Rasa:300" rel="stylesheet")
             script.
 
                   let barOptions =  {
@@ -19,12 +21,23 @@ html
                         $("#report-headline").text(title);
                   }
 
+                  function createRandomColor() {
+                        let randomizer = () => Math.floor(Math.random() * (255 - 1));
+                        return `rgba(${randomizer()}, ${randomizer()}, ${randomizer()}, 0.5)`;
+                  }
+
                   function createReport(report) {
                         var id=0;
                         report.diagrams.forEach(function(diagram) {
-                              // Create the canvas to insert the diagram into
+                              // Create the title and canvas to insert the diagram into
                               id += 1;
+                              let titleId = "diagramm-title-" + id;
                               let canvasId = "canvas-" + id;
+
+                              $('<h2>').attr({
+                                    id: titleId
+                              }).text(diagram.title).appendTo('#diagrams');
+
                               $('<canvas>').attr({
                                     id: canvasId
                               }).appendTo('#diagrams');
@@ -36,6 +49,15 @@ html
                   };
 
                   function createChart(diagram, canvasId) {
+                        // Create a color array for each dataset
+                        diagram.datasets.forEach( dataset => {
+                              let color = createRandomColor();
+                              let colorArray = [];
+                              dataset.data.forEach( data => {
+                                    colorArray.push(color);
+                              });
+                              dataset.backgroundColor = colorArray;
+                        });
                         let ctx = $("#"+canvasId)[0].getContext('2d');
                         let myChart = new Chart(ctx, {
                               type: diagram.type.toLowerCase(),

@@ -19,7 +19,6 @@ app.get('/', (req, res) => {
    res.render('index', {title: 'Age difference', labels: JSON.stringify(['0-20', '20-40', '40-60', '60+']), datasets: JSON.stringify([{label: 'Dataset 1', data: [24, 58, 13, 7]}])});
 });
 
-// Test a Bar Chart using only one label
 // Normally the Data would be sent to this server directly.
 // In this case we test the query that would be built by the generic application.
 app.get('/report', (req, res) => {
