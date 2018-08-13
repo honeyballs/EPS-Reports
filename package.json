@@ -1,0 +1,19 @@
+{
+  "name": "express-charts",
+  "version": "1.0.0",
+  "description": "Testing server side charts using express",
+  "main": "index.js",
+  "scripts": {
+    "start": "nodemon ./index.js"
+  },
+  "author": "Yannick Bals",
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.16.3",
+    "neo4j-driver": "^1.5.0",
+    "pug": "^2.0.3"
+  },
+  "devDependencies": {
+    "nodemon": "^1.18.3"
+  }
+}

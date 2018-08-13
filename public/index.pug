@@ -1,0 +1,83 @@
+html
+      head
+            script(src = 'https://code.jquery.com/jquery-3.3.1.min.js' integrity='sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=' crossorigin='anonymous')
+            script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js')
+            script.
+
+                  let barOptions =  {
+                        scales: {
+                              yAxes: [{
+                                    ticks: {
+                                          beginAtZero:true
+                                    }
+                              }]
+                        }
+                  }
+                  
+                  function setTitleAndHeader(title) {
+                        document.title = title;
+                        $("#report-headline").text(title);
+                  }
+
+                  function createReport(report) {
+                        var id=0;
+                        report.diagrams.forEach(function(diagram) {
+                              // Create the canvas to insert the diagram into
+                              id += 1;
+                              let canvasId = "canvas-" + id;
+                              $('<canvas>').attr({
+                                    id: canvasId
+                              }).appendTo('#diagrams');
+
+                              // Create the diagram
+                              createChart(diagram, canvasId);
+
+                        });
+                  };
+
+                  function createChart(diagram, canvasId) {
+                        let ctx = $("#"+canvasId)[0].getContext('2d');
+                        let myChart = new Chart(ctx, {
+                              type: diagram.type.toLowerCase(),
+                              data: {
+                                    labels: diagram.labels,
+                                    datasets: diagram.datasets
+                              },
+                              options: diagram.type.toLowerCase() === 'bar' ? barOptions : {}
+                        });
+                  }
+
+                  function createBarChart(labels, datasets) {
+                        console.log(labels);
+                        console.log(datasets);
+                        let ctx = $( "#bar-chart" )[0].getContext('2d');
+                        let myChart = new Chart(ctx, {
+                              type: 'bar',
+                              data: {
+                                    labels: labels,
+                                    datasets: datasets
+                              }, 
+                              options: {
+                                    scales: {
+                                          yAxes: [{
+                                                ticks: {
+                                                      beginAtZero:true
+                                                }
+                                          }]
+                                    }
+                              }
+                        })
+                  }
+      title Report
+      body
+            script.    
+                  $( document ).ready(function() {
+                        let report = !{report};
+                        setTitleAndHeader(report.title);
+                        createReport(report);
+                        console.log(report);
+                  }) 
+            h1(id='report-headline')
+            div(id='diagrams')
+            
+

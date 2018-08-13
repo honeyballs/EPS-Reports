@@ -1,0 +1,62 @@
+CREATE 
+(:Person {age: 18})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 27})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 72})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 45})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 34})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 57})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 84})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 24})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 61})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 56})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 94})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 19})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 40})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 33})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 42})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 89})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 18})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 41})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 18})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 95})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 40})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 18})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 68})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 43})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 61})-[:WATCHES]->(:Station {type: 'privat'}),
+(:Person {age: 19})-[:WATCHES]->(:Station {type: 'öffentlich'}),
+(:Person {age: 47})-[:WATCHES]->(:Station {type: 'privat'});
+
+// One dataset in BarChart, no customQuery
+CREATE
+(r:Report {listname: 'Testreport'}),
+(d:Diagram {listname: 'Anzahl Testpersonen je Altersgruppe', type: 'Bar'}),
+(ds:Dataset {listname: 'Testpersonen', labelName: 'Person', customQuery: ''}),
+(x1:Data {listname: 'bis 30 Jahre', whereCondition: 'n.age <= 30'}),
+(x2:Data {listname: 'zwischen 30 und 60 Jahre', whereCondition: 'n.age > 30 AND n.age <= 60'}),
+(x3:Data {listname: 'über 60 Jahre', whereCondition: 'n.age > 60'}),
+(d)-[:X_VALUE]->(x1),
+(d)-[:X_VALUE]->(x2),
+(d)-[:X_VALUE]->(x3),
+(d)-[:HAS_DATASET]->(ds),
+(r)-[:HAS_DIAGRAM]->(d)
+
+// Same diagram as pie
+MATCH 
+(r:Report {listname: 'Testreport'}) 
+CREATE
+(d:Diagram {listname: 'Anzahl Testpersonen je Altersgruppe (Torte)', type: 'Pie'}),
+(ds:Dataset {listname: 'Alle Testpersonen', labelName: 'Person', customQuery: ''}),
+(ds2:Dataset {listname: 'Alle Testpersonen Nr. 2', labelName: 'Person', customQuery: ''}),
+(x1:Data {listname: 'bis 30 Jahre', whereCondition: 'n.age <= 30'}),
+(x2:Data {listname: 'zwischen 30 und 60 Jahre', whereCondition: 'n.age > 30 AND n.age <= 60'}),
+(x3:Data {listname: 'über 60 Jahre', whereCondition: 'n.age > 60'}),
+(d)-[:X_VALUE]->(x1),
+(d)-[:X_VALUE]->(x2),
+(d)-[:X_VALUE]->(x3),
+(d)-[:HAS_DATASET]->(ds),
+(d)-[:HAS_DATASET]->(ds2),
+(r)-[:HAS_DIAGRAM]->(d)
+
+CREATE
+(b:BarChart {name: 'Watcher's age', query: '(n:Person)-[:WATCHES]->(m:Station) RETURN count(a)', querylabel: '',})
