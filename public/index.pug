@@ -6,7 +6,7 @@ html
             link(href="https://fonts.googleapis.com/css?family=Rasa:300" rel="stylesheet")
             script.
 
-                  let barOptions =  {
+                  let zeroOptions =  {
                         scales: {
                               yAxes: [{
                                     ticks: {
@@ -59,14 +59,32 @@ html
                               dataset.backgroundColor = colorArray;
                         });
                         let ctx = $("#"+canvasId)[0].getContext('2d');
-                        let myChart = new Chart(ctx, {
+                        if (diagram.type.toLowerCase() === 'line') {
+                              createLineChart(ctx, diagram);
+                        } else {
+                              let myChart = new Chart(ctx, {
+                                    type: diagram.type.toLowerCase(),
+                                    data: {
+                                          labels: diagram.labels,
+                                          datasets: diagram.datasets
+                                    },
+                                    options: diagram.type.toLowerCase() !== 'pie' ? zeroOptions : {}
+                              });
+                        }
+                  }
+
+                  function createLineChart(ctx, diagram) {
+                        let datasets = diagram.datasets;
+                        // If fill is not set to false, the line looks whack
+                        let datasetsWithOptions = datasets.map( ds => ({...ds, fill: false}))
+                        let chart = new Chart(ctx, {
                               type: diagram.type.toLowerCase(),
                               data: {
                                     labels: diagram.labels,
-                                    datasets: diagram.datasets
+                                    datasets: datasetsWithOptions
                               },
-                              options: diagram.type.toLowerCase() === 'bar' ? barOptions : {}
-                        });
+                              options: zeroOptions
+                        })
                   }
 
                   function createBarChart(labels, datasets) {

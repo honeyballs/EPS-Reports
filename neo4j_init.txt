@@ -58,5 +58,20 @@ CREATE
 (d)-[:HAS_DATASET]->(ds2),
 (r)-[:HAS_DIAGRAM]->(d)
 
+// Same as BarChart but Line
+MATCH 
+(r:Report {listname: 'Testreport'}) 
+CREATE 
+(d:Diagram {listname: 'Anzahl Testpersonen je Altersgruppe (Line)', type: 'Line'}),
+(ds:Dataset {listname: 'Testpersonen', labelName: 'Person', customQuery: ''}),
+(x1:Data {listname: 'bis 30 Jahre', whereCondition: 'n.age <= 30'}),
+(x2:Data {listname: 'zwischen 30 und 60 Jahre', whereCondition: 'n.age > 30 AND n.age <= 60'}),
+(x3:Data {listname: 'über 60 Jahre', whereCondition: 'n.age > 60'}),
+(d)-[:X_VALUE]->(x1),
+(d)-[:X_VALUE]->(x2),
+(d)-[:X_VALUE]->(x3),
+(d)-[:HAS_DATASET]->(ds),
+(r)-[:HAS_DIAGRAM]->(d)
+
 CREATE
 (b:BarChart {name: 'Watcher's age', query: '(n:Person)-[:WATCHES]->(m:Station) RETURN count(a)', querylabel: '',})
