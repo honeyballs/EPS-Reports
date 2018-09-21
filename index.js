@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
+
 
 // For testing purposes with neo4j. Would not be included in final server.
 const neo4j = require('neo4j-driver').v1;
@@ -19,10 +21,27 @@ app.get('/', (req, res) => {
    res.render('index', {title: 'Age difference', labels: JSON.stringify(['0-20', '20-40', '40-60', '60+']), datasets: JSON.stringify([{label: 'Dataset 1', data: [24, 58, 13, 7]}])});
 });
 
+
+app.get('/report', (req, res) => {
+    // TODO: Get the id from query params
+    var body = { id: 2758 };
+    fetch('http://localhost:8080/BasicGenericDataService/report/generate/report', { 
+        method: 'POST',
+        body:    JSON.stringify(body),
+        headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': 'admin'
+        },
+    })
+        .then(response => response.json())
+        .then(report => res.render('index', {report: JSON.stringify(report)}))
+        .catch(err => console.error(err));
+})
+
 // Normally the Data would be sent to this server directly.
 // In this case we test the query that would be built by the generic application.
-app.get('/report', (req, res) => {
-   console.log('received');
+app.get('/test', (req, res) => {
+    console.log('received');
    const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'passwort'));
    const session = driver.session();
 
@@ -32,7 +51,6 @@ app.get('/report', (req, res) => {
    resultPromise.then( result => {
       helper.resolveReportResult(result.records, session, res);
    })
-
 })
 
 app.listen(3000, () => console.log('App is listening on Port 3000!'));

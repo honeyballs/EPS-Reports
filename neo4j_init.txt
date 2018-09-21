@@ -72,6 +72,3 @@ CREATE
 (d)-[:X_VALUE]->(x3),
 (d)-[:HAS_DATASET]->(ds),
 (r)-[:HAS_DIAGRAM]->(d)
-
-CREATE
-(b:BarChart {name: 'Watcher's age', query: '(n:Person)-[:WATCHES]->(m:Station) RETURN count(a)', querylabel: '',})
