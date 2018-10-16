@@ -21,3 +21,39 @@ h1 {
 canvas {
     margin: 0 0 75px;
 }
+
+@media (min-width: 1000px) {
+    
+    canvas {
+        height: 70vh !important;
+        width: auto !important;
+        margin: 0 auto;
+    }
+
+}
+
+@media print {
+    
+    #diagrams {
+        height: auto;
+        width: 100%;
+        margin: 0;
+    }
+
+    canvas {
+        page-break-inside: avoid;
+        max-height: 45vh !important;
+        height: auto !important;
+        width: 95vw !important;
+        margin: 0 auto;
+    }
+
+    @media print and (orientation: landscape) {
+        canvas {
+            height: 100vh !important;
+            width: auto !important;
+        }
+    }
+
+}
+

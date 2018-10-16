@@ -24,7 +24,9 @@ app.get('/', (req, res) => {
 
 app.get('/report', (req, res) => {
     // TODO: Get the id from query params
-    var body = { id: 2758 };
+    console.log(req.query);
+    var body = { id: req.query.nodeId };
+    //var body = { id: 2758 };
     fetch('http://localhost:8080/BasicGenericDataService/report/generate/report', { 
         method: 'POST',
         body:    JSON.stringify(body),
