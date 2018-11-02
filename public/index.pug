@@ -51,12 +51,21 @@ html
                   function createChart(diagram, canvasId) {
                         // Create a color array for each dataset
                         diagram.datasets.forEach( dataset => {
-                              let color = createRandomColor();
                               let colorArray = [];
-                              dataset.data.forEach( data => {
-                                    colorArray.push(color);
-                              });
+                              let color = createRandomColor();
+                              if (diagram.type.toLowerCase() === 'pie') {
+                                    dataset.data.forEach( data => {
+                                          colorArray.push(createRandomColor());
+                                    });
+                              } else {
+                                    dataset.data.forEach( data => {
+                                          colorArray.push(color);
+                                    });
+                              }
                               dataset.backgroundColor = colorArray;
+                              if (diagram.type.toLowerCase() === 'line') {
+                                    dataset.borderColor = color;
+                              }
                         });
                         let ctx = $("#"+canvasId)[0].getContext('2d');
                         if (diagram.type.toLowerCase() === 'line') {
