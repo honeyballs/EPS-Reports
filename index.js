@@ -18,12 +18,11 @@ app.set('view engine', 'pug');
 app.use(express.static(path.join(__dirname, "public")));
 
 app.get('/', (req, res) => {
-   res.render('index', {title: 'Age difference', labels: JSON.stringify(['0-20', '20-40', '40-60', '60+']), datasets: JSON.stringify([{label: 'Dataset 1', data: [24, 58, 13, 7]}])});
+    res.send('<h1>Report Server is up and running</h1>')
 });
 
 
 app.get('/report', (req, res) => {
-    // TODO: Get the id from query params
     console.log(req.query);
     var body = { id: req.query.nodeId };
     //var body = { id: 2758 };
@@ -38,21 +37,6 @@ app.get('/report', (req, res) => {
         .then(response => response.json())
         .then(report => res.render('index', {report: JSON.stringify(report)}))
         .catch(err => console.error(err));
-})
-
-// Normally the Data would be sent to this server directly.
-// In this case we test the query that would be built by the generic application.
-app.get('/test', (req, res) => {
-    console.log('received');
-   const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'passwort'));
-   const session = driver.session();
-
-   // Get the report
-   const metaQuery='MATCH (r:Report {listname: "Testreport"})-[:HAS_DIAGRAM]->(d:Diagram) RETURN r as report, d as diagram';
-   const resultPromise = session.run(metaQuery);
-   resultPromise.then( result => {
-      helper.resolveReportResult(result.records, session, res);
-   })
 })
 
 app.listen(3000, () => console.log('App is listening on Port 3000!'));

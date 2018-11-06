@@ -1,3 +1,21 @@
+// Add this to index to test
+// Normally the Data would be sent to this server directly.
+// In this case we test the query that would be built by the generic application.
+/* 
+app.get('/test', (req, res) => {
+  console.log('received');
+ const driver = neo4j.driver('bolt://localhost:7687', neo4j.auth.basic('neo4j', 'passwort'));
+ const session = driver.session();
+
+ // Get the report
+ const metaQuery='MATCH (r:Report {listname: "Testreport"})-[:HAS_DIAGRAM]->(d:Diagram) RETURN r as report, d as diagram';
+ const resultPromise = session.run(metaQuery);
+ resultPromise.then( result => {
+    helper.resolveReportResult(result.records, session, res);
+ })
+})
+ */
+
 const neo4j = require("neo4j-driver").v1;
 var reportData = {};
 var diagramData = [];
