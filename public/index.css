@@ -14,12 +14,17 @@ h1 {
     margin-bottom: 50px;
 }
 
-#diagrams {
+#report {
     width: 100%;
 }
 
 canvas {
     margin: 0 0 75px;
+}
+
+.table-div {
+    margin: 0 0 75px;
+    width: 100%;
 }
 
 @media (min-width: 1000px) {

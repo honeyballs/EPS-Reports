@@ -21,6 +21,10 @@ app.get('/', (req, res) => {
     res.send('<h1>Report Server is up and running</h1>')
 });
 
+app.get('/table-test', (req, res) => {
+    res.render('index', {});
+})
+
 
 app.get('/report', (req, res) => {
     console.log(req.query);

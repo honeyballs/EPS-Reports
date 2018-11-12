@@ -1,0 +1,32 @@
+create (a:Server {servername: 'lasergruppe.mnd.thm.de', ip: '212.201.31.161'}), 
+    (b:Server {servername: 'lm.mnd.thm.de', ip: '212.201.31.201'}),
+    (c:Server {servername: 'master13.mnd.thm.de', ip: '212.201.31.214'})
+
+create (a:Software {typ: 'Betriebssystem', bezeichnung: 'Windows 2012 Server R2'}),
+    (b:Software {typ: 'Betriebssystem', bezeichnung: 'LAMP-Server'})
+
+create (a:Mitarbeiter {vorname: 'Daniel', nachname: 'Thölken', mail: 'daniel.thoelken@mnd.thm.de'}),
+    (b:Mitarbeiter {vorname: 'Irina', nachname: 'Scheffler', mail: 'irina.scheffler@mnd.thm.de'}),
+    (c:Mitarbeiter {vorname: 'Oliver', nachname: 'Scheliga', mail: ''})
+
+match (a:Server {servername: 'lasergruppe.mnd.thm.de'}), 
+    (b:Server {servername: 'lm.mnd.thm.de'}),
+    (c:Server {servername: 'master13.mnd.thm.de'}),
+    (d:Software {bezeichnung: 'Windows 2012 Server R2'}),
+    (e:Software {bezeichnung: 'LAMP-Server'})    
+create (a)-[:HAS_OPERATING_SYSTEM]->(d), 
+    (b)-[:HAS_OPERATING_SYSTEM]->(d),
+    (c)-[:HAS_OPERATING_SYSTEM]->(e)
+    
+
+match (a:Server {servername: 'lasergruppe.mnd.thm.de'}), 
+    (b:Server {servername: 'lm.mnd.thm.de'}),
+    (c:Server {servername: 'master13.mnd.thm.de'}),
+    (d:Mitarbeiter {vorname: 'Daniel', nachname: 'Thölken'}),
+    (e:Mitarbeiter {vorname: 'Irina', nachname: 'Scheffler'}),
+    (f:Mitarbeiter {vorname: 'Oliver', nachname: 'Scheliga'})
+create (d)-[:RESPONSIBLE_FOR]->(a), 
+    (e)-[:RESPONSIBLE_FOR]->(b),
+    (f)-[:RESPONSIBLE_FOR]->(c)
+
+
