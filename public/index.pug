@@ -4,10 +4,7 @@ html
             script(src='https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.bundle.js')
             script(type="text/javascript" src='/main.js')
             link(rel='stylesheet', href='/index.css')
-            link(href="https://fonts.googleapis.com/css?family=Rasa:300" rel="stylesheet")
-
-            link(href="https://unpkg.com/tabulator-tables@4.1.1/dist/css/tabulator.min.css" rel="stylesheet")
-            script(type="text/javascript" src="https://unpkg.com/tabulator-tables@4.1.1/dist/js/tabulator.min.js")
+            
             script.
 
                   let zeroOptions =  {
@@ -19,7 +16,7 @@ html
                               }]
                         }
                   }
-                  
+
                   function setTitleAndHeader(title) {
                         document.title = title;
                         $("#report-headline").text(title);
@@ -30,30 +27,26 @@ html
                         return `rgba(${randomizer()}, ${randomizer()}, ${randomizer()}, 0.5)`;
                   }
 
+                  let tables = [];
+
                   function createReport(report) {
-                        var id=0;
 
                         report.tables.forEach(function(table) {
-                              // Create the title and canvas to insert the diagram into
-                              id += 1;
+                              let id = 0;// Create the title and canvas to insert the diagram into
                               let titleId = "table-title-" + id;
-                              let divId = "div-" + id;
+                              let divId = "table-div-" + id;
 
                               $('<h2>').attr({
                                     id: titleId
                               }).text(table.title).appendTo('#report');
 
-                              $('<div>').attr({
-                                    id: divId,
-                                    class: 'table-div'
-                              }).appendTo('#report');
-
-                              createTabulator(table, '#' + divId);
+                              createTable(table, divId);
+                              id += 1;
                         });
 
                         report.diagrams.forEach(function(diagram) {
                               // Create the title and canvas to insert the diagram into
-                              id += 1;
+                              let id = 0;
                               let titleId = "diagramm-title-" + id;
                               let canvasId = "canvas-" + id;
 
@@ -67,32 +60,116 @@ html
 
                               // Create the diagram
                               createChart(diagram, canvasId);
-
+                              id += 1;
                         });
                   };
 
-                  function createTabulator(data, id) {
+                  function createTable(data, id) {
 
                         // Sort the columns
                         data.columns.sort((a, b) => {
-                              if (a.order < b.order) {
-                                    return -1;
-                              } else if (a.order > b.order) {
-                                    return 1;
-                              }
-                                    return 0;
+                            if (a.order < b.order) {
+                                  return -1;
+                            } else if (a.order > b.order) {
+                                  return 1;
+                            }
+                                  return 0;
                         })
 
-                        let tableData = {
-                              data: data.data,
-                              layout: "fitColumns",
-                              groupBy: data.groupBy,
-                              columns: data.columns.map(column => ({title: column.name, field: column.name, align: 'left'})),
+                        var table = $('<table>')
+                        .append($('<tr>')
+                            .append(
+                                data.columns.map(column => $('<th>').append(column.name))
+                            )
+                        )
+
+                        var finishedTable = createRows(table, data);
+
+                        $('<div>').attr({
+                            id: id,
+                            class: "table-div"
+                        })
+                        .append(finishedTable)
+                        .appendTo('#report')
+
+                  }
+
+                  function createRows (table, data) {
+                  
+                        if (data.groupBy && data.groupBy.length > 0) {
+                            return createGroupedRows(table, data)
                         }
 
-                        console.log(tableData);
+                        return table.append(
+                            data.data.map(row => {
+                                return $('<tr>').append(
+                                    data.columns.map(column => $('<td>').append(row[column.name]))
+                                )
+                            })
+                        )
+                  }
 
-                        let table = new Tabulator(id, tableData)
+                  function createGroupedRows(table, data) {
+                        var groupField = data.groupBy;
+                        var groupedFields = [];
+                        var groupedRows = [];
+
+                        data.data.forEach(row => {
+                            // if we already grouped all data for this field we can skip it
+                            if (!groupedFields.includes(row[groupField])) {
+                                var parameter = row[groupField];
+                                var newRow = {data: []}
+                                newRow[groupField] = parameter;
+                                data.data.forEach(tempRow => {
+                                    // Get all properties except the groupField if matching
+                                    if (tempRow[groupField] === parameter) {
+                                        var modifiedRow = Object.assign({}, tempRow);
+                                        delete modifiedRow[groupField];
+                                        newRow.data.push(modifiedRow);
+                                    }
+                                });
+
+                                // Save that that value was grouped by
+                                groupedFields.push(parameter);
+                                groupedRows.push(newRow);
+                            }
+
+                        })
+
+
+                        // Create all table rows
+                        var rows = [];
+                        groupedRows.forEach(row => {
+                            // The first row of each group contains the field on which the grouping is done
+                            var firstRow = row.data[0];
+                            firstRow[groupField] = row[groupField]
+                            rows.push(
+                                $('<tr>').append(
+                                    data.columns.map(column => {
+                                        var td = $('<td>').append(firstRow[column.name])
+                                        if (column.name === groupField) {
+                                            td.attr({
+                                                class: 'group'
+                                            });
+                                        }
+                                        return td;
+                                    })
+                                )
+                            )
+                            // Now we add all other rows if available
+                            if (row.data.length > 0) {
+                                row.data.forEach((dataRow, index)=> {
+                                    if (index > 0) {
+                                        rows.push(
+                                            $('<tr>').append(data.columns.map(column => $('<td>').append(dataRow[column.name])))
+                                        )
+                                    }
+                                })
+                            }   
+                        })
+
+                        return table.append(rows);
+
                   }
 
                   function createChart(diagram, canvasId) {
@@ -143,32 +220,11 @@ html
                         })
                   }
 
-                  function createBarChart(labels, datasets) {
-                        console.log(labels);
-                        console.log(datasets);
-                        let ctx = $( "#bar-chart" )[0].getContext('2d');
-                        let myChart = new Chart(ctx, {
-                              type: 'bar',
-                              data: {
-                                    labels: labels,
-                                    datasets: datasets
-                              }, 
-                              options: {
-                                    scales: {
-                                          yAxes: [{
-                                                ticks: {
-                                                      beginAtZero:true
-                                                }
-                                          }]
-                                    }
-                              }
-                        })
-                  }
       title Report
       body
             script.    
                   $( document ).ready(function() {
-                        let report = !{report};
+                        var report = !{report};
                         setTitleAndHeader(report.title);
                         createReport(report);
                         console.log(report);

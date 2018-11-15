@@ -1,4 +1,5 @@
 function testTable() {
+
     let testData = {
         title: 'Test Tabelle',
         groupBy: 'verantwortliche',
@@ -17,6 +18,7 @@ function testTable() {
         ]
     };
 
+    
 
 }
 

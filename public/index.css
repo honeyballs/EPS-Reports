@@ -3,7 +3,7 @@ body {
     width: 100%;
     margin: 0;
     overflow-x: hidden;
-    font-family: 'Rasa', sans-serif;
+    font-family: sans-serif;
     padding: 20px;
     -moz-box-sizing: border-box;
     -webkit-box-sizing: border-box;
@@ -25,6 +25,29 @@ canvas {
 .table-div {
     margin: 0 0 75px;
     width: 100%;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8em;
+}
+
+table, th, td {
+    border: 1px solid grey;
+}
+
+th, td {
+    text-align: left;
+    padding: 5px;
+}
+
+th {
+    background: lightgray;
+}
+
+.group {
+    font-weight: bold;
 }
 
 @media (min-width: 1000px) {
@@ -51,6 +74,10 @@ canvas {
         height: auto !important;
         width: 95vw !important;
         margin: 0 auto;
+    }
+
+    .tabulator {
+        width: 95vw !important;
     }
 
     @media print and (orientation: landscape) {
