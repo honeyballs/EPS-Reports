@@ -77,10 +77,12 @@ html
                         })
 
                         var table = $('<table>')
-                        .append($('<tr>')
-                            .append(
-                                data.columns.map(column => $('<th>').append(column.name))
-                            )
+                        .append($('<thead>')
+                              .append($('<tr>')
+                                    .append(
+                                          data.columns.map(column => $('<th>').append(column.name))
+                                    )
+                              )
                         )
 
                         var finishedTable = createRows(table, data);
@@ -101,11 +103,13 @@ html
                         }
 
                         return table.append(
-                            data.data.map(row => {
-                                return $('<tr>').append(
-                                    data.columns.map(column => $('<td>').append(row[column.name]))
-                                )
-                            })
+                              $('<tbody>').append(
+                                    data.data.map(row => {
+                                          return $('<tr>').append(
+                                                data.columns.map(column => $('<td>').append(row[column.name]))
+                                          )
+                                    })
+                              )
                         )
                   }
 
@@ -168,7 +172,7 @@ html
                             }   
                         })
 
-                        return table.append(rows);
+                        return table.append($('<tbody>').append(rows));
 
                   }
 
